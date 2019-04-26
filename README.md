@@ -12,6 +12,18 @@ to build cross compiler install the following packages first
 
 then follow the following [instructions](https://github.com/cfenollosa/os-tutorial/tree/master/11-kernel-crosscompiler)
 
+then add the following to ~/.bashrc
+
+- `export PREFIX="/usr/local/i386elfgcc"`
+- `export TARGET=i386-elf`
+- `export PATH="$PREFIX/bin:$PATH"`
+ 
+# compile and run 
+
+- to compile use `make all` 
+- to clean for compiling again use `make clean`
+- to run use `make run`
+
 # useful sources 
 - [tuhdo/os01](https://github.com/tuhdo/os01)
 - [cfenollosa/os-tutorial](https://github.com/cfenollosa/os-tutorial)
