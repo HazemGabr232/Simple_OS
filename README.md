@@ -20,8 +20,8 @@ then add the following to ~/.bashrc
  
 # compile and run 
 
-- to compile use `make all` 
-- to clean for compiling again use `make clean`
+- to compile use `make` 
+- to clean use `make clean`
 - to run use `make run`
 
 # useful sources 
