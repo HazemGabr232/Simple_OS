@@ -1,7 +1,11 @@
-void dummy_test_entrypoint() {
-}
+#include "../drivers/screen.h"
 
 void main() {
-    char* video_memory = (char*) 0xb8000;
-    *video_memory = 'X';
+
+    clear_screen();
+    kprint_at("Does anybody want coffee?", 20, 5);
+    kprint("!!!");
+    kprint("\n\nWho wants coffee?");
+    kprint_at(" I just made cawfee, Who wants cawffay?", 20, 9);
+    kprint_at("test error", 88, 88);
 }
