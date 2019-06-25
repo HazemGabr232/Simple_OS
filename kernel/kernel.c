@@ -1,11 +1,18 @@
 #include "../drivers/screen.h"
+#include "util.h"
 
 void main() {
-
     clear_screen();
-    kprint_at("Does anybody want coffee?", 20, 5);
-    kprint("!!!");
-    kprint("\n\nWho wants coffee?");
-    kprint_at(" I just made cawfee, Who wants cawffay?", 20, 9);
-    kprint_at("test error", 88, 88);
+
+    /* Fill up the screen */
+    int i = 0;
+    for (i = 0; i < 24; i++) {
+        char str[255];
+        int_to_ascii(i, str);
+        kprint_at(str, 0, i);
+    }
+
+    kprint_at("This text forces the kernel to scroll. Row 0 will disappear. ", 60, 24);
+    kprint("And with this text, the kernel will scroll again, and row 1 will disappear too!");
+    kprint_at("error test",50,50);
 }
