@@ -29,3 +29,4 @@ then add the following to ~/.bashrc
 - [cfenollosa/os-tutorial](https://github.com/cfenollosa/os-tutorial)
 - [os-dev](http://www.cs.bham.ac.uk/~exr/lectures/opsys/10_11/lectures/os-dev.pdf)
 - [littleosbook](https://littleosbook.github.io)
+- [OSDev.org](wiki.osdev.org)
