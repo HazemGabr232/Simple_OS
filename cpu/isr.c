@@ -13,8 +13,8 @@ void PIC_remap(int offset1, int offset2){
 
     unsigned char a1, a2;
  
-    a1 = inb(PIC1_DATA);                        // save masks
-    a2 = inb(PIC2_DATA);
+    a1 = port_byte_in(PIC1_DATA);                        // save masks
+    a2 = port_byte_in(PIC2_DATA);
  
     port_byte_out(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);  // starts the initialization sequence (in cascade mode)
     port_byte_out(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
