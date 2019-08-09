@@ -4,6 +4,31 @@
 #include "../drivers/screen.h"
 #include "../kernel/util.h"
 
+/*stores pointers to drivers handlers each one in the same index of it's number*/
+isr_t interrupt_handlers[256];
+
+
+
+void PIC_remap(int offset1, int offset2){ 
+
+    unsigned char a1, a2;
+ 
+    a1 = inb(PIC1_DATA);                        // save masks
+    a2 = inb(PIC2_DATA);
+ 
+    port_byte_out(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);  // starts the initialization sequence (in cascade mode)
+    port_byte_out(PIC2_COMMAND, ICW1_INIT | ICW1_ICW4);
+    port_byte_out(PIC1_DATA, offset1);                 // ICW2: Master PIC vector offset
+    port_byte_out(PIC2_DATA, offset2);                 // ICW2: Slave PIC vector offset
+    port_byte_out(PIC1_DATA, 0x04);                       // ICW3: tell Master PIC that there is a slave PIC at IRQ2 (0000 0100)
+    port_byte_out(PIC2_DATA, 0x02);                       // ICW3: tell Slave PIC its cascade identity (0000 0010)
+    port_byte_out(PIC1_DATA, ICW4_8086);
+    port_byte_out(PIC2_DATA, ICW4_8086);
+ 
+    port_byte_out(PIC1_DATA, a1);   // restore saved masks.
+    port_byte_out(PIC2_DATA, a2);
+}
+
 void isr_install() {
     set_idt_gate(0, (uintptr_t)isr0);
     set_idt_gate(1, (uintptr_t)isr1);
@@ -37,6 +62,28 @@ void isr_install() {
     set_idt_gate(29, (uintptr_t)isr29);
     set_idt_gate(30, (uintptr_t)isr30);
     set_idt_gate(31, (uintptr_t)isr31);
+
+    // Remap the PIC
+    PIC_remap(0x20, 0x28);
+
+    // Install the IRQs
+    set_idt_gate(32, (uintptr_t)irq0);
+    set_idt_gate(33, (uintptr_t)irq1);
+    set_idt_gate(34, (uintptr_t)irq2);
+    set_idt_gate(35, (uintptr_t)irq3);
+    set_idt_gate(36, (uintptr_t)irq4);
+    set_idt_gate(37, (uintptr_t)irq5);
+    set_idt_gate(38, (uintptr_t)irq6);
+    set_idt_gate(39, (uintptr_t)irq7);
+    set_idt_gate(40, (uintptr_t)irq8);
+    set_idt_gate(41, (uintptr_t)irq9);
+    set_idt_gate(42, (uintptr_t)irq10);
+    set_idt_gate(43, (uintptr_t)irq11);
+    set_idt_gate(44, (uintptr_t)irq12);
+    set_idt_gate(45, (uintptr_t)irq13);
+    set_idt_gate(46, (uintptr_t)irq14);
+    set_idt_gate(47, (uintptr_t)irq15);
+
 
     set_idt(); // Load with ASM
 }
@@ -88,4 +135,27 @@ void isr_handler(registers_t r) {
     kprint("\n");
     kprint(exception_messages[r.int_no]);
     kprint("\n");
+    
+    /*TODO: handle CPU exceptions */
+    /*if (interrupt_handlers[r.int_no] != 0) {
+        isr_t handler = interrupt_handlers[r.int_no];
+        handler(r);
+    }*/
+}
+
+void add_interrupt_handler(u8 n, isr_t handler) {
+    interrupt_handlers[n] = handler;
+}
+
+void irq_handler(registers_t r) {
+    /* After every interrupt we need to send an EOI to the PICs
+     * or they will not send another interrupt again */
+    if (r.int_no >= 40) port_byte_out(PIC2_COMMAND, PIC_EOI); /* slave */
+    port_byte_out(PIC1_COMMAND, PIC_EOI); /* master */
+
+    /* Handle the interrupt in a more modular way */
+    if (interrupt_handlers[r.int_no] != 0) {
+        isr_t handler = interrupt_handlers[r.int_no];
+        handler(r);
+    }
 }
