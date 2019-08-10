@@ -9,9 +9,9 @@ isr_t interrupt_handlers[256];
 
 
 
-void PIC_remap(int offset1, int offset2){ 
+void PIC_remap(u32 offset1, u32 offset2){ 
 
-    unsigned char a1, a2;
+    u8 a1, a2;
  
     a1 = port_byte_in(PIC1_DATA);                        // save masks
     a2 = port_byte_in(PIC2_DATA);
