@@ -1,11 +1,22 @@
-#include "../drivers/screen.h"
 #include "../cpu/isr.h"
-#include "../cpu/timer.h"
+#include "../drivers/screen.h"
+#include "kernel.h"
+#include "../libc/string.h"
 
 void main() {
     isr_install();
-    /* Test the interrupts */
+    irq_install();
 
-    asm volatile("sti");
-    init_timer(50);
+    kprint("Type your command \n"
+        "Type END to halt the CPU\n> ");
+}
+
+void user_input(char *input) {
+    if (strcmp(input, "END") == 0) {
+        kprint("Stopping the CPU. Bye!\n");
+        asm volatile("hlt");
+    }
+    kprint(input);
+    kprint(": is not existed");
+    kprint("\n> ");
 }
