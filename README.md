@@ -1,7 +1,18 @@
 # Simple_OS
-simple OS for educational purposes 
+Simple X86 operating system from scratch operating in 32bit protecting mode, built for educational purposes 
 
-# building cross compiler 
+# TODO LIST :
+- [x] Boot loader
+- [x] 32bit protecting mode
+- [x] Timer driver (PIT)
+- [x] Keyboard driver (PS/2)
+- [x] Screen driver
+- [x] Shell
+- [ ] FAT32 file system
+
+
+# if you want to try it follow these steps :
+# 1: building cross compiler 
 
 to build cross compiler install the following packages first 
 
@@ -18,7 +29,7 @@ then add the following to ~/.bashrc
 - `export TARGET=i386-elf`
 - `export PATH="$PREFIX/bin:$PATH"`
  
-# compile and run 
+# 2: compile and run 
 
 - to compile use `make` 
 - to clean use `make clean`
